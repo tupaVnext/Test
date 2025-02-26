@@ -1,77 +1,98 @@
-Có, bạn có thể cài đặt `FirebaseAnalytics` thủ công bằng cách tải xuống gói cần thiết và đặt vào đúng thư mục mà CocoaPods yêu cầu. Dưới đây là các bước chi tiết:
+Để cài đặt CocoaPods phiên bản **1.15.2** bằng Homebrew, bạn có thể làm theo các bước sau:
 
 ---
 
-### **Cách cài đặt FirebaseAnalytics thủ công**
-#### **Bước 1: Tải tệp FirebaseAnalytics thủ công**
-Do lỗi `curl (35) LibreSSL`, bạn có thể tải `FirebaseAnalytics` bằng trình duyệt hoặc một lệnh `curl` khác.
-
-1. **Mở trình duyệt** và truy cập liên kết sau:
-   - [FirebaseAnalytics-11.4.0.tar.gz](https://dl.google.com/firebase/ios/analytics/edf73aefd77661bd/FirebaseAnalytics-11.4.0.tar.gz)
-   - Lưu tệp `.tar.gz` vào thư mục `Downloads`.
-
-2. **Hoặc dùng `curl` với TLS 1.2 (nếu có)**:
-   ```sh
-   curl --tlsv1.2 -o ~/Downloads/FirebaseAnalytics-11.4.0.tar.gz https://dl.google.com/firebase/ios/analytics/edf73aefd77661bd/FirebaseAnalytics-11.4.0.tar.gz
-   ```
-
----
-
-#### **Bước 2: Đặt vào thư mục cache của CocoaPods**
-Sau khi tải xong, bạn cần đặt tệp vào thư mục cache của CocoaPods:
-
-1. **Tạo thư mục cache CocoaPods**:
-   ```sh
-   mkdir -p ~/Library/Caches/CocoaPods/Pods/Release/FirebaseAnalytics/11.4.0-abcdefg
-   ```
-
-   Lưu ý: `11.4.0-abcdefg` có thể thay đổi dựa vào phiên bản Firebase, hãy kiểm tra chính xác.
-
-2. **Di chuyển tệp vào cache**:
-   ```sh
-   mv ~/Downloads/FirebaseAnalytics-11.4.0.tar.gz ~/Library/Caches/CocoaPods/Pods/Release/FirebaseAnalytics/11.4.0-abcdefg/FirebaseAnalytics-11.4.0.tar.gz
-   ```
-
----
-
-#### **Bước 3: Chạy lại `pod install`**
-Sau khi đã đặt tệp vào thư mục cache, chạy lại lệnh:
+### **1. Kiểm tra CocoaPods hiện tại**
+Trước tiên, kiểm tra xem bạn đã có CocoaPods hay chưa bằng lệnh:
 
 ```sh
-pod install --verbose
+pod --version
+```
+
+Nếu đã có và muốn thay đổi phiên bản, bạn cần gỡ bỏ bản cũ trước.
+
+---
+
+### **2. Gỡ bỏ CocoaPods cũ (nếu cần)**
+Nếu bạn đã cài đặt CocoaPods trước đó và muốn cài đặt lại đúng phiên bản **1.15.2**, hãy chạy:
+
+```sh
+brew uninstall cocoapods
 ```
 
 ---
 
-### **Nếu vẫn lỗi, thử cách thêm FirebaseAnalytics vào project thủ công**
-Nếu cách trên không được, bạn có thể thêm FirebaseAnalytics vào project iOS của Flutter thủ công:
-
-1. **Mở `ios/Podfile` và thêm dòng sau vào trong `target`**:
-   ```ruby
-   pod 'Firebase/Analytics'
-   ```
-   
-2. **Chạy lệnh sau để cài đặt lại pods**:
-   ```sh
-   cd ios
-   pod install --repo-update
-   ```
-
-Nếu vẫn gặp lỗi, bạn có thể thử xóa hoàn toàn cache của CocoaPods trước khi chạy lại:
+### **3. Cài đặt CocoaPods phiên bản 1.15.2**
+Vì Homebrew không hỗ trợ cài đặt một phiên bản cụ thể của CocoaPods trực tiếp, bạn cần sử dụng **gem** thay vì `brew install cocoapods`:
 
 ```sh
-rm -rf ~/Library/Caches/CocoaPods
-rm -rf Pods
-rm -rf ios/Podfile.lock
-pod install --verbose
+sudo gem install cocoapods -v 1.15.2
+```
+
+Sau đó kiểm tra lại:
+
+```sh
+pod --version
 ```
 
 ---
 
-### **Tóm tắt giải pháp**
-1. **Tải FirebaseAnalytics thủ công** từ Google.
-2. **Đặt tệp vào thư mục cache của CocoaPods**.
-3. **Chạy lại `pod install`**.
-4. Nếu vẫn lỗi, **thêm FirebaseAnalytics vào Podfile thủ công** và chạy `pod install --repo-update`.
+### **4. (Tùy chọn) Sử dụng CocoaPods với `rbenv` hoặc `chruby`**
+Nếu bạn sử dụng Ruby qua **rbenv** hoặc **chruby**, có thể cần cài đặt CocoaPods trong môi trường Ruby của bạn:
 
-Bạn thử cách trên xem có khắc phục được không nhé! 🚀
+```sh
+gem install cocoapods -v 1.15.2
+```
+
+Sau đó kiểm tra đường dẫn của CocoaPods:
+
+```sh
+which pod
+```
+
+Nếu đường dẫn không đúng (vẫn trỏ đến phiên bản cũ), bạn có thể cần restart terminal hoặc chạy:
+
+```sh
+rehash
+```
+
+---
+
+### **5. (Tùy chọn) Sử dụng Bundler để quản lý phiên bản CocoaPods**
+Nếu bạn làm việc với nhiều dự án và muốn đảm bảo sử dụng đúng phiên bản CocoaPods cho từng dự án, bạn có thể dùng **Bundler**:
+
+```sh
+gem install bundler
+bundle init
+```
+
+Sau đó chỉnh sửa `Gemfile`:
+
+```ruby
+source 'https://rubygems.org'
+gem 'cocoapods', '1.15.2'
+```
+
+Cài đặt CocoaPods qua Bundler:
+
+```sh
+bundle install
+```
+
+Chạy CocoaPods qua Bundler:
+
+```sh
+bundle exec pod --version
+```
+
+---
+
+### **Tóm tắt**
+1. **Gỡ bản cũ** (nếu có): `brew uninstall cocoapods`
+2. **Cài bản 1.15.2 qua gem**: `sudo gem install cocoapods -v 1.15.2`
+3. **Kiểm tra lại phiên bản**: `pod --version`
+4. **(Tùy chọn) Dùng Bundler** để cố định phiên bản trong từng dự án.
+
+---
+
+Bạn thử cách này xem có ổn không nhé! 🚀
