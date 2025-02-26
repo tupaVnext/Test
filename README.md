@@ -96,3 +96,8 @@ bundle exec pod --version
 ---
 
 Bạn thử cách này xem có ổn không nhé! 🚀
+
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+export PATH="/Users/tupa/Documents/flutter/bin:$PATH"
+
+export PATH="/opt/homebrew/bin/pod/bin:$PATH"
