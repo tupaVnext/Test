@@ -1,104 +1,78 @@
-Để cài đặt CocoaPods phiên bản **1.15.2** bằng Homebrew, bạn có thể làm theo các bước sau:
+Lỗi này thường xảy ra khi có vấn đề với đường dẫn của `flutter_root` trong `Podfile`, hoặc khi `podhelper.rb` bị thiếu hoặc không được tìm thấy. Dưới đây là một số cách khắc phục:
 
----
-
-### **1. Kiểm tra CocoaPods hiện tại**
-Trước tiên, kiểm tra xem bạn đã có CocoaPods hay chưa bằng lệnh:
+### 1. **Kiểm tra đường dẫn của Flutter**
+Mở terminal và chạy lệnh sau để kiểm tra đường dẫn của Flutter:
 
 ```sh
-pod --version
+which flutter
 ```
 
-Nếu đã có và muốn thay đổi phiên bản, bạn cần gỡ bỏ bản cũ trước.
+Nếu Flutter không được tìm thấy hoặc đường dẫn không chính xác, hãy cập nhật `flutter_root` trong `Podfile`:
 
----
-
-### **2. Gỡ bỏ CocoaPods cũ (nếu cần)**
-Nếu bạn đã cài đặt CocoaPods trước đó và muốn cài đặt lại đúng phiên bản **1.15.2**, hãy chạy:
-
-```sh
-brew uninstall cocoapods
-```
-
----
-
-### **3. Cài đặt CocoaPods phiên bản 1.15.2**
-Vì Homebrew không hỗ trợ cài đặt một phiên bản cụ thể của CocoaPods trực tiếp, bạn cần sử dụng **gem** thay vì `brew install cocoapods`:
-
-```sh
-sudo gem install cocoapods -v 1.15.2
-```
-
-Sau đó kiểm tra lại:
-
-```sh
-pod --version
-```
-
----
-
-### **4. (Tùy chọn) Sử dụng CocoaPods với `rbenv` hoặc `chruby`**
-Nếu bạn sử dụng Ruby qua **rbenv** hoặc **chruby**, có thể cần cài đặt CocoaPods trong môi trường Ruby của bạn:
-
-```sh
-gem install cocoapods -v 1.15.2
-```
-
-Sau đó kiểm tra đường dẫn của CocoaPods:
-
-```sh
-which pod
-```
-
-Nếu đường dẫn không đúng (vẫn trỏ đến phiên bản cũ), bạn có thể cần restart terminal hoặc chạy:
-
-```sh
-rehash
-```
-
----
-
-### **5. (Tùy chọn) Sử dụng Bundler để quản lý phiên bản CocoaPods**
-Nếu bạn làm việc với nhiều dự án và muốn đảm bảo sử dụng đúng phiên bản CocoaPods cho từng dự án, bạn có thể dùng **Bundler**:
-
-```sh
-gem install bundler
-bundle init
-```
-
-Sau đó chỉnh sửa `Gemfile`:
+Mở `ios/Podfile` và tìm dòng:
 
 ```ruby
-source 'https://rubygems.org'
-gem 'cocoapods', '1.15.2'
+flutter_root = File.expand_path(File.join('..', 'flutter'))
 ```
 
-Cài đặt CocoaPods qua Bundler:
+Sửa thành:
+
+```ruby
+flutter_root = File.expand_path(File.join('..', '..', 'flutter'))
+```
+
+Hoặc đặt đường dẫn tuyệt đối:
+
+```ruby
+flutter_root = '/Users/your_username/flutter'
+```
+
+### 2. **Kiểm tra sự tồn tại của `podhelper.rb`**
+Mở terminal và chạy:
 
 ```sh
-bundle install
+ls "$(flutter --cache-dir)/flutter_tools/bin"
 ```
 
-Chạy CocoaPods qua Bundler:
+Nếu `podhelper.rb` không tồn tại, có thể cần cập nhật Flutter:
 
 ```sh
-bundle exec pod --version
+flutter upgrade
+flutter precache
 ```
 
----
+### 3. **Chạy lại `pod install` với các bước sau**
+Thử các bước sau theo thứ tự:
 
-### **Tóm tắt**
-1. **Gỡ bản cũ** (nếu có): `brew uninstall cocoapods`
-2. **Cài bản 1.15.2 qua gem**: `sudo gem install cocoapods -v 1.15.2`
-3. **Kiểm tra lại phiên bản**: `pod --version`
-4. **(Tùy chọn) Dùng Bundler** để cố định phiên bản trong từng dự án.
+```sh
+cd ios
+rm -rf Podfile.lock Pods
+pod deintegrate
+pod install --verbose
+```
 
----
+Nếu vẫn gặp lỗi, hãy thử chạy `flutter clean` trước:
 
-Bạn thử cách này xem có ổn không nhé! 🚀
+```sh
+flutter clean
+rm -rf ios/Pods ios/Podfile.lock
+flutter pub get
+cd ios && pod install
+```
 
-export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
-export PATH="/Users/tupa/Documents/flutter/bin:$PATH"
+### 4. **Cập nhật CocoaPods**
+Nếu vẫn lỗi, thử cập nhật CocoaPods:
 
-export PATH="/opt/homebrew/bin/pod/bin:$PATH"
-https://chatgpt.com/share/67bec746-86b4-8003-9cae-d4256e9c6397
+```sh
+sudo gem install cocoapods
+pod repo update
+```
+
+Sau đó chạy lại:
+
+```sh
+cd ios
+pod install
+```
+
+Nếu vẫn không được, em có thể gửi thêm thông tin lỗi chi tiết để anh hỗ trợ tiếp nhé! 🚀
