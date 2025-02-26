@@ -1,78 +1,101 @@
-Lỗi này thường xảy ra khi có vấn đề với đường dẫn của `flutter_root` trong `Podfile`, hoặc khi `podhelper.rb` bị thiếu hoặc không được tìm thấy. Dưới đây là một số cách khắc phục:
+Lỗi này thường liên quan đến việc CocoaPods đang sử dụng proxy không hợp lệ (`https://127.0.0.1:3128`). Đây có thể là do:
 
-### 1. **Kiểm tra đường dẫn của Flutter**
-Mở terminal và chạy lệnh sau để kiểm tra đường dẫn của Flutter:
+1. **Proxy đã được thiết lập nhưng không hoạt động**
+2. **Cấu hình `pod` sử dụng proxy sai**
+3. **Mạng bị chặn hoặc DNS không thể truy cập vào `https://cdn.cocoapods.org/`**
 
-```sh
-which flutter
-```
+---
 
-Nếu Flutter không được tìm thấy hoặc đường dẫn không chính xác, hãy cập nhật `flutter_root` trong `Podfile`:
+### Cách khắc phục:
 
-Mở `ios/Podfile` và tìm dòng:
-
-```ruby
-flutter_root = File.expand_path(File.join('..', 'flutter'))
-```
-
-Sửa thành:
-
-```ruby
-flutter_root = File.expand_path(File.join('..', '..', 'flutter'))
-```
-
-Hoặc đặt đường dẫn tuyệt đối:
-
-```ruby
-flutter_root = '/Users/your_username/flutter'
-```
-
-### 2. **Kiểm tra sự tồn tại của `podhelper.rb`**
-Mở terminal và chạy:
+#### 🔹 **1. Kiểm tra và tắt proxy**
+Chạy lệnh sau trong terminal:
 
 ```sh
-ls "$(flutter --cache-dir)/flutter_tools/bin"
+env | grep -i proxy
 ```
 
-Nếu `podhelper.rb` không tồn tại, có thể cần cập nhật Flutter:
+Nếu thấy các dòng như:
 
-```sh
-flutter upgrade
-flutter precache
+```
+http_proxy=http://127.0.0.1:3128
+https_proxy=https://127.0.0.1:3128
 ```
 
-### 3. **Chạy lại `pod install` với các bước sau**
-Thử các bước sau theo thứ tự:
+Thử tắt proxy bằng cách chạy:
 
 ```sh
-cd ios
-rm -rf Podfile.lock Pods
-pod deintegrate
-pod install --verbose
+unset http_proxy
+unset https_proxy
+export http_proxy=""
+export https_proxy=""
 ```
 
-Nếu vẫn gặp lỗi, hãy thử chạy `flutter clean` trước:
+Hoặc thêm vào `~/.zshrc` hoặc `~/.bashrc`:
 
 ```sh
-flutter clean
-rm -rf ios/Pods ios/Podfile.lock
-flutter pub get
-cd ios && pod install
+export http_proxy=""
+export https_proxy=""
 ```
 
-### 4. **Cập nhật CocoaPods**
-Nếu vẫn lỗi, thử cập nhật CocoaPods:
+Sau đó, khởi động lại terminal và thử lại `pod install`.
 
+---
+
+#### 🔹 **2. Xóa cache của CocoaPods và cập nhật**
 ```sh
-sudo gem install cocoapods
+rm -rf ~/Library/Caches/CocoaPods
+rm -rf ~/.cocoapods/repos
+pod setup
 pod repo update
 ```
 
-Sau đó chạy lại:
+Sau đó thử chạy lại:
 
 ```sh
 cd ios
-pod install
+pod install --verbose
 ```
 
-Nếu vẫn không được, em có thể gửi thêm thông tin lỗi chi tiết để anh hỗ trợ tiếp nhé! 🚀
+---
+
+#### 🔹 **3. Chạy `pod install` mà không dùng CDN**
+Nếu vẫn bị lỗi, thử bỏ qua CDN của CocoaPods:
+
+```sh
+cd ios
+pod install --no-repo-update
+```
+
+Hoặc chạy:
+
+```sh
+pod install --verbose --sources=https://github.com/CocoaPods/Specs.git
+```
+
+---
+
+#### 🔹 **4. Kiểm tra file cấu hình CocoaPods**
+Mở file `~/.curlrc` và kiểm tra xem có dòng `proxy` nào không:
+
+```sh
+cat ~/.curlrc
+```
+
+Nếu có dòng như:
+
+```
+proxy = 127.0.0.1:3128
+```
+
+Hãy xóa nó bằng cách mở file:
+
+```sh
+nano ~/.curlrc
+```
+
+Xóa dòng `proxy = ...`, lưu lại (`Ctrl + X → Y → Enter`), rồi thử lại `pod install`.
+
+---
+
+Sau khi thử các cách trên, nếu vẫn gặp lỗi, em có thể gửi chi tiết lỗi để anh hỗ trợ tiếp nhé! 🚀
