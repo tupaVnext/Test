@@ -101,3 +101,4 @@ export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 export PATH="/Users/tupa/Documents/flutter/bin:$PATH"
 
 export PATH="/opt/homebrew/bin/pod/bin:$PATH"
+https://chatgpt.com/share/67bec746-86b4-8003-9cae-d4256e9c6397
