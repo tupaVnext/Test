@@ -7,3 +7,20 @@ I think you forgott to set your newly install Xcode on Command-linetool path loc
 
 
 https://github.com/corretto/corretto-17/releases
+
+
+{
+    "configurations": [
+        {
+            "name": "Dart Debug",
+            "type": "dart",
+            "request": "launch",
+            "program": "bin/main.dart",
+            "env": {
+                "HTTP_PROXY": "http://proxy_host:proxy_port",
+                "HTTPS_PROXY": "http://proxy_host:proxy_port",
+                "NO_PROXY": "localhost,127.0.0.1"
+            }
+        }
+    ]
+}
