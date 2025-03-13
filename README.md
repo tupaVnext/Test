@@ -56,3 +56,8 @@ ID thiết bị Android có dạng `AE3A.240806.005` là một **build ID** củ
 
 Nếu em muốn kiểm tra build ID mới nhất của Android hoặc thiết bị cụ thể, có thể tham khảo trang chính thức của Google:  
 🔗 [https://source.android.com/docs/setup/about/build-numbers](https://source.android.com/docs/setup/about/build-numbers)
+
+
+✅ Build.ID được tạo khi Google hoặc nhà sản xuất thiết bị (OEM) biên dịch một phiên bản Android mới.
+✅ Nó có thể thay đổi khi có bản cập nhật Android hoặc khi nhà sản xuất phát hành một phiên bản phần mềm mới cho thiết bị.
+✅ Build.ID giúp phân biệt các phiên bản Android khác nhau trên cùng một dòng thiết bị.
