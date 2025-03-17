@@ -23,7 +23,7 @@ class TrianglePainter extends CustomPainter {
 
     final textPainter = TextPainter(
       text: TextSpan(
-        text: '応募済み',
+        text: 'text',
         style:
             AppTextStyle.semiBoldHiragino_10.copyWith(letterSpacing: 10 * 0.04),
       ),
