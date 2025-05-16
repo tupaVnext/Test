@@ -1,0 +1,61 @@
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    subprojects {
+        afterEvaluate { project ->
+            // Check the subproject has android library imported or not
+            if (project.hasProperty('android')) {
+
+                // Handle namespace problem
+                project.android {
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                }
+
+                // Force using the specific sdk, ndk and version of Java / Kotlin to compile
+                project.android {
+                    compileSdkVersion 36
+                    ndkVersion = '27.0.12077973'
+                    compileOptions {
+                        sourceCompatibility JavaVersion.VERSION_21
+                        targetCompatibility JavaVersion.VERSION_21
+                    }
+
+                    defaultConfig {
+                        // Enable multidex for apps with over 64K methods
+                        multiDexEnabled true
+
+                        // Set minSdk to prevent error build for library
+                        minSdk 28
+                    }
+                }
+                project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+                    kotlinOptions {
+                        jvmTarget = '21'
+                    }
+                }
+            }
+        }
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
+
+// Skip the task for testClasses in build phase
+gradle.startParameter.excludedTaskNames.addAll(
+        gradle.startParameter.taskNames.findAll { it.contains("testClasses") }
+)
