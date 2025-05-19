@@ -1,0 +1,15 @@
+android: "PROXY 10.0.2.2:3128;"
+ios: "PROXY 127.0.0.1:3128;";
+
+Trên Thiết bị thật (real device Android/iOS)
+127.0.0.1 trỏ đến bản thân thiết bị, nên không truy cập được proxy trên máy tính.
+
+Muốn kết nối được:
+
+Cần dùng IP LAN của máy tính, ví dụ 192.168.1.100:3128.
+
+Đảm bảo thiết bị và máy tính cùng mạng Wi-Fi.
+
+Firewall trên máy tính cho phép kết nối từ LAN.
+
+client.findProxy = (_) => "PROXY 192.168.1.100:3128;";
