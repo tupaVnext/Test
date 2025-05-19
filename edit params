@@ -1,0 +1,30 @@
+extensions: [TagExtension(tagsToExtend: {'a'}, 
+                                builder: (ctx) {
+TODO
+
+}
+
+clear:   
+  // CustomRenderMatcher customTagMatcher() =>
+  //     (context) => context.tree.element?.localName == 'a';
+
+
+@override
+  Future<void> dispose() {
+    return smartAuth.removeUserConsentApiListener();
+  }
+
+  @override
+  Future<String?> getSmsCode() async {
+    final signature = await smartAuth.getAppSignature();
+    debugPrint('App Signature: $signature');
+    final res = await smartAuth.getSmsWithUserConsentApi();
+    if (res.hasData && res.data?.code != null) {
+      return res.data?.code;
+    }
+    return null;
+  }
+
+SmartAuth.instance,
+
+CarouselController -> CarouselSliderController
